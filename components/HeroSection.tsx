@@ -227,8 +227,8 @@ export default function HeroSection() {
                   width={240}
                   height={240}
                   alt="Pumple mascot"
-                  className="object-contain"
-                  style={{ mixBlendMode: "multiply" }}
+                  className="object-contain rounded-full"
+                  style={{ filter: "drop-shadow(0 0 20px rgba(74, 222, 128, 0.3))" }}
                   priority
                 />
               </motion.div>
