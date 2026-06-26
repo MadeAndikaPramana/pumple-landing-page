@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p ~/.claude/skills)",
+      "Bash(cp -r ~/.agents/skills/ui-ux-pro-max ~/.claude/skills/)",
+      "Read(//Users/andika/**)",
+      "Bash(python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py \"crypto fintech AI analyst dark playful Indonesian trader SaaS\" --design-system -p \"Pumple\" -f markdown)",
+      "Bash(python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py \"dark glassmorphism crypto neon glow\" --domain style)",
+      "Bash(python3 ~/.claude/skills/ui-ux-pro-max/scripts/search.py \"crypto fintech dark\" --domain color)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:3031)",
+      "Bash(npx playwright *)",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}
