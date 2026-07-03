@@ -1,7 +1,9 @@
 "use client";
 
+import { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, MotionConfig } from "framer-motion";
+import Fireflies from "@/components/Fireflies";
 
 const container = {
   hidden: {},
@@ -20,11 +22,33 @@ const CARD_ROWS = [
 ];
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const backRef = useRef<HTMLCanvasElement>(null);
+  const frontRef = useRef<HTMLCanvasElement>(null);
+  const h1Ref = useRef<HTMLHeadingElement>(null);
+  const frogRef = useRef<HTMLDivElement>(null);
+  const frogBobRef = useRef<HTMLDivElement>(null);
+  const mouthRef = useRef<HTMLSpanElement>(null);
+  const chompTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // resting = content frame; briefly swap to the open-mouth frame for the bite
+  const [chomping, setChomping] = useState(false);
+
+  const handleChomp = useCallback(() => {
+    setChomping(true);
+    clearTimeout(chompTimer.current);
+    chompTimer.current = setTimeout(() => setChomping(false), 420);
+  }, []);
+
   return (
     <MotionConfig reducedMotion="user">
-      <section className="relative overflow-hidden pb-24 pt-36 sm:pt-40">
+      <section ref={sectionRef} className="relative overflow-hidden pb-24 pt-36 sm:pt-40">
         <div className="bg-grid-fade absolute inset-0" aria-hidden="true" />
         <div className="hero-glow absolute inset-x-0 top-0 h-[600px]" aria-hidden="true" />
+        <canvas
+          ref={backRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        />
 
         <motion.div
           variants={container}
@@ -45,8 +69,9 @@ export default function Hero() {
           </motion.div>
 
           <motion.h1
+            ref={h1Ref}
             variants={item}
-            className="mt-7 text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
+            className="relative mt-7 text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
           >
             Pump Smarter,
             <br />
@@ -65,14 +90,38 @@ export default function Hero() {
 
           {/* Sample analysis card + mascot */}
           <motion.div variants={item} className="relative mt-16 w-full max-w-2xl">
-            <Image
-              src="/mascot.png"
-              alt="Pumple mascot, a laid-back crowned frog king"
-              width={160}
-              height={160}
-              priority
+            <div
+              ref={frogRef}
               className="absolute -top-[104px] right-4 z-10 w-28 animate-float sm:right-8 sm:w-36"
-            />
+            >
+              <div ref={frogBobRef} className="relative origin-bottom">
+                <Image
+                  src="/mascot-idle.png"
+                  alt="Pumple mascot, a laid-back crowned frog king"
+                  width={160}
+                  height={160}
+                  priority
+                  className={`w-full ${chomping ? "opacity-0" : "opacity-100"}`}
+                />
+                <Image
+                  src="/mascot-chomp.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={160}
+                  height={160}
+                  priority
+                  className={`absolute inset-0 w-full ${chomping ? "opacity-100" : "opacity-0"}`}
+                />
+                {/* Invisible mouth anchor — the tongue reads its live position.
+                    Sits inside the bob div so it inherits the squash/stretch. */}
+                <span
+                  ref={mouthRef}
+                  aria-hidden="true"
+                  className="absolute h-0 w-0"
+                  style={{ left: "37.5%", top: "46.5%" }}
+                />
+              </div>
+            </div>
             <div className="glass overflow-hidden rounded-2xl text-left shadow-glow-lg">
               <div className="flex items-center gap-2 border-b border-white/5 px-5 py-3.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-pumple-red/70" aria-hidden="true" />
@@ -130,6 +179,22 @@ export default function Hero() {
             </div>
           </motion.div>
         </motion.div>
+
+        <canvas
+          ref={frontRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-20 h-full w-full"
+        />
+        <Fireflies
+          sectionRef={sectionRef}
+          backRef={backRef}
+          frontRef={frontRef}
+          h1Ref={h1Ref}
+          frogRef={frogRef}
+          frogBobRef={frogBobRef}
+          mouthRef={mouthRef}
+          onChomp={handleChomp}
+        />
       </section>
     </MotionConfig>
   );

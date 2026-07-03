@@ -128,6 +128,25 @@ body {
   background: radial-gradient(ellipse 70% 55% at 50% -10%, rgba(74, 222, 128, 0.16) 0%, transparent 70%);
 }
 
+/* Squash-bob saat si katak menyantap kunang-kunang */
+.frog-snack {
+  animation: frogSnack 420ms ease;
+}
+@keyframes frogSnack {
+  0% {
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+  }
+  25% {
+    transform: translateY(2px) scale(1.08, 0.9) rotate(-3deg);
+  }
+  55% {
+    transform: translateY(-3px) scale(0.95, 1.06) rotate(2deg);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+  }
+}
+
 /* Sorotan hijau yang mengikuti kursor — senada dengan glow yang ada */
 .cursor-glow {
   position: fixed;
