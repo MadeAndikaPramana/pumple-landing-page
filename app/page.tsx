@@ -1,23 +1,27 @@
 import Navbar from "@/components/Navbar";
-import HeroSection from "@/components/HeroSection";
-import ProblemSection from "@/components/ProblemSection";
-import HowItWorksSection from "@/components/HowItWorksSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import PricingSection from "@/components/PricingSection";
-import WaitlistSection from "@/components/WaitlistSection";
-import FooterSection from "@/components/FooterSection";
+import Hero from "@/components/Hero";
+import Ticker from "@/components/Ticker";
+import ChatDemo from "@/components/ChatDemo";
+import Features from "@/components/Features";
+import HowItWorks from "@/components/HowItWorks";
+import Faq from "@/components/Faq";
+import WaitlistCta from "@/components/WaitlistCta";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main className="relative overflow-x-hidden">
+    <>
       <Navbar />
-      <HeroSection />
-      <ProblemSection />
-      <HowItWorksSection />
-      <FeaturesSection />
-      <PricingSection />
-      <WaitlistSection />
-      <FooterSection />
-    </main>
+      <main id="konten" className="relative overflow-x-hidden">
+        <Hero />
+        <Ticker />
+        <ChatDemo />
+        <Features />
+        <HowItWorks />
+        <Faq />
+        <WaitlistCta />
+      </main>
+      <Footer />
+    </>
   );
 }
