@@ -29,7 +29,7 @@ function TickerRow() {
 }
 
 export default function Ticker() {
-  // Dekoratif — angka ilustrasi, bukan data live
+  // Decorative — illustrative numbers, not live data
   return (
     <div
       aria-hidden="true"

@@ -5,18 +5,18 @@ import { motion, MotionConfig } from "framer-motion";
 const STEPS = [
   {
     number: "01",
-    title: "Daftar antrian",
-    desc: "Cukup email. Nggak ada formulir panjang, nggak ada kartu kredit.",
+    title: "Join the waitlist",
+    desc: "Just your email. No long forms, no credit card.",
   },
   {
     number: "02",
-    title: "Terima undangan",
-    desc: "Akses beta dibuka bertahap — makin awal daftar, makin cepat masuk.",
+    title: "Get your invite",
+    desc: "Beta access opens in waves — the earlier you join, the sooner you're in.",
   },
   {
     number: "03",
-    title: "Mulai nanya",
-    desc: "Tanya pair apa pun, dapat analisis lengkap: level, bias, dan alasannya.",
+    title: "Battle and climb",
+    desc: "Post your calls, take on other traders, and rank up the leaderboard — with AI analysis on tap.",
   },
 ];
 
@@ -32,10 +32,10 @@ export default function HowItWorks() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="mx-auto max-w-2xl text-center">
             <p className="font-mono text-xs uppercase tracking-widest text-pumple-green">
-              {"// cara kerja"}
+              {"// how it works"}
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-              Tiga langkah, langsung jalan.
+              Three steps, you&apos;re in.
             </h2>
           </div>
 

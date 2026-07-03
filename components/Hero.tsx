@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { motion, MotionConfig } from "framer-motion";
-import WaitlistForm from "@/components/WaitlistForm";
 
 const container = {
   hidden: {},
@@ -17,7 +16,7 @@ const item = {
 const CARD_ROWS = [
   { label: "ENTRY ZONE", value: "95,800 – 96,400" },
   { label: "FIB 0.618", value: "94,120" },
-  { label: "WHALE FLOW", value: "+$18.2M / 4 jam ▲", green: true },
+  { label: "WHALE FLOW", value: "+$18.2M / 4h ▲", green: true },
 ];
 
 export default function Hero() {
@@ -41,7 +40,7 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-pulse-dot rounded-full bg-pumple-green" />
             </span>
             <span className="font-mono text-xs uppercase tracking-widest text-pumple-muted">
-              Beta tertutup 2026 — antrian dibuka
+              Closed beta 2026 — waitlist open
             </span>
           </motion.div>
 
@@ -58,24 +57,17 @@ export default function Hero() {
             variants={item}
             className="mt-6 max-w-2xl text-lg leading-relaxed text-pumple-muted"
           >
-            Pumple itu AI analyst crypto pribadimu. Tanya soal Fibonacci, Smart Money
-            Concepts, pergerakan whale, sampai sentimen pasar — dijawab lengkap dengan
-            alasannya, dalam satu chat Bahasa Indonesia.
+            Pumple is the arena for crypto traders. Battle your signals head-to-head,
+            climb the accuracy leaderboard, and prove your calls against the community —
+            with an AI analyst on tap for the deep reads (Fibonacci, Smart Money,
+            whale flow, sentiment) whenever you want backup.
           </motion.p>
 
-          <motion.div variants={item} className="mt-9 w-full max-w-xl">
-            <WaitlistForm />
-          </motion.div>
-
-          <motion.p variants={item} className="text-sm text-pumple-dim">
-            Gratis selama beta · Tanpa kartu kredit · Nggak ada spam
-          </motion.p>
-
-          {/* Kartu analisis contoh + mascot */}
-          <motion.div variants={item} className="relative mt-24 w-full max-w-2xl">
+          {/* Sample analysis card + mascot */}
+          <motion.div variants={item} className="relative mt-16 w-full max-w-2xl">
             <Image
               src="/mascot.png"
-              alt="Mascot Pumple, raja katak santai bermahkota"
+              alt="Pumple mascot, a laid-back crowned frog king"
               width={160}
               height={160}
               priority
@@ -87,7 +79,7 @@ export default function Hero() {
                 <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" aria-hidden="true" />
                 <span className="h-2.5 w-2.5 rounded-full bg-pumple-green/70" aria-hidden="true" />
                 <span className="ml-3 font-mono text-xs text-pumple-muted">
-                  pumple · analisis BTC/USDT · H4
+                  pumple · BTC/USDT analysis · H4
                 </span>
               </div>
 
@@ -98,7 +90,7 @@ export default function Hero() {
                     LONG
                   </span>
                   <span className="text-xs text-pumple-muted">
-                    struktur H4 bullish · CHoCH valid di 94.6k
+                    H4 structure bullish · CHoCH confirmed at 94.6k
                   </span>
                 </div>
 
@@ -119,7 +111,7 @@ export default function Hero() {
                 <div className="border-t border-white/5 pt-4">
                   <div className="flex items-baseline justify-between gap-4">
                     <span className="text-xs uppercase tracking-wider text-pumple-dim">
-                      Sentimen
+                      Sentiment
                     </span>
                     <span className="text-pumple-text">72 · Greed</span>
                   </div>
@@ -133,7 +125,7 @@ export default function Hero() {
               </div>
 
               <p className="border-t border-white/5 px-5 py-3 text-xs text-pumple-dim sm:px-7">
-                Tampilan ilustrasi — bukan sinyal &amp; bukan financial advice.
+                Illustration only — not a signal &amp; not financial advice.
               </p>
             </div>
           </motion.div>

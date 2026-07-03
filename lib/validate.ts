@@ -2,7 +2,7 @@ export function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
-// Cukup ketat untuk nangkep typo umum, cukup longgar untuk semua alamat valid
+// Strict enough to catch common typos, loose enough for every valid address
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function isValidEmail(email: string): boolean {

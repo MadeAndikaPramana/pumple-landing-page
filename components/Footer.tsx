@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const LINKS = [
-  { href: "#fitur", label: "Fitur" },
-  { href: "#cara-kerja", label: "Cara Kerja" },
+  { href: "#fitur", label: "Features" },
+  { href: "#cara-kerja", label: "How It Works" },
   { href: "#faq", label: "FAQ" },
   { href: "#waitlist", label: "Waitlist" },
 ];
@@ -17,7 +17,7 @@ export default function Footer() {
             <Link href="/" className="flex items-center gap-2.5">
               <Image
                 src="/logo.png"
-                alt="Logo Pumple"
+                alt="Pumple logo"
                 width={32}
                 height={32}
                 className="rounded-lg"
@@ -29,7 +29,7 @@ export default function Footer() {
             </p>
           </div>
 
-          <nav aria-label="Navigasi footer">
+          <nav aria-label="Footer navigation">
             <ul className="flex flex-wrap items-center gap-x-7 gap-y-3">
               {LINKS.map((link) => (
                 <li key={link.href}>
@@ -47,9 +47,9 @@ export default function Footer() {
 
         <div className="mt-10 border-t border-white/5 pt-8">
           <p className="max-w-3xl text-xs leading-relaxed text-pumple-dim">
-            Pumple adalah alat bantu analisis, bukan penasihat keuangan. Trading crypto
-            berisiko tinggi dan bisa menyebabkan kehilangan seluruh modal — selalu lakukan
-            riset sendiri sebelum mengambil keputusan.
+            Pumple is an analysis and competition tool, not a financial advisor. Crypto
+            trading is high-risk and can lead to the total loss of your capital — always
+            do your own research before making a decision.
           </p>
           <p className="mt-4 font-mono text-xs text-pumple-dim">
             © 2026 Pumple. All rights reserved.

@@ -20,7 +20,7 @@ export default function WaitlistForm() {
     const normalized = normalizeEmail(email);
     if (!isValidEmail(normalized)) {
       setStatus("error");
-      setMessage("Alamat email-nya belum valid. Cek lagi ya.");
+      setMessage("That email doesn't look valid. Mind checking it?");
       return;
     }
 
@@ -40,11 +40,11 @@ export default function WaitlistForm() {
         setStatus("success");
       } else {
         setStatus("error");
-        setMessage(data?.error ?? "Ada yang salah di server. Coba lagi sebentar lagi.");
+        setMessage(data?.error ?? "Something went wrong on our end. Please try again in a moment.");
       }
     } catch {
       setStatus("error");
-      setMessage("Koneksi bermasalah. Cek internetmu, lalu coba lagi.");
+      setMessage("Connection problem. Check your internet and try again.");
     }
   }
 
@@ -56,9 +56,9 @@ export default function WaitlistForm() {
       >
         <CheckCircle2 className="h-6 w-6 shrink-0 text-pumple-green" aria-hidden="true" />
         <div>
-          <p className="font-semibold text-pumple-text">Kamu resmi masuk antrian!</p>
+          <p className="font-semibold text-pumple-text">You&apos;re officially on the list!</p>
           <p className="text-sm text-pumple-muted">
-            Undangan beta dikirim ke email begitu slot-mu kebuka.
+            Your beta invite lands in your inbox the moment your slot opens.
           </p>
         </div>
       </div>
@@ -67,12 +67,12 @@ export default function WaitlistForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="relative w-full">
-      {/* Honeypot — disembunyikan dari manusia & screen reader, bot yang mengisi ditolak */}
+      {/* Honeypot — hidden from humans & screen readers; bots that fill it are rejected */}
       <div
         aria-hidden="true"
         className="absolute h-px w-px overflow-hidden [clip:rect(0,0,0,0)]"
       >
-        <label htmlFor={`${id}-company`}>Perusahaan</label>
+        <label htmlFor={`${id}-company`}>Company</label>
         <input
           id={`${id}-company`}
           name="company"
@@ -86,7 +86,7 @@ export default function WaitlistForm() {
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <label htmlFor={`${id}-email`} className="sr-only">
-          Alamat email
+          Email address
         </label>
         <input
           id={`${id}-email`}
@@ -95,7 +95,7 @@ export default function WaitlistForm() {
           required
           autoComplete="email"
           inputMode="email"
-          placeholder="emailkamu@contoh.com"
+          placeholder="you@example.com"
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
@@ -116,11 +116,11 @@ export default function WaitlistForm() {
           {status === "loading" ? (
             <>
               <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
-              Mendaftar…
+              Joining…
             </>
           ) : (
             <>
-              Gabung Waitlist
+              Join Waitlist
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </>
           )}

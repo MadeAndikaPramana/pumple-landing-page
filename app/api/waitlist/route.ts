@@ -8,13 +8,13 @@ export async function POST(request: Request) {
     body = await request.json();
   } catch {
     return NextResponse.json(
-      { ok: false, error: "Request tidak valid." },
+      { ok: false, error: "Invalid request." },
       { status: 400 }
     );
   }
 
-  // Honeypot: manusia tidak melihat field ini — kalau terisi, balas seolah
-  // sukses supaya bot tidak tahu submitnya dibuang
+  // Honeypot: humans never see this field — if it's filled, respond as if it
+  // succeeded so bots don't learn their submission was dropped
   if (typeof body.company === "string" && body.company.trim() !== "") {
     return NextResponse.json({ ok: true }, { status: 201 });
   }
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   const email = normalizeEmail(typeof body.email === "string" ? body.email : "");
   if (!isValidEmail(email)) {
     return NextResponse.json(
-      { ok: false, error: "Format email-nya belum valid. Cek lagi ya." },
+      { ok: false, error: "That email doesn't look valid. Mind checking it?" },
       { status: 400 }
     );
   }
@@ -30,9 +30,9 @@ export async function POST(request: Request) {
   const supabaseUrl = process.env.SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabaseUrl || !serviceRoleKey) {
-    console.error("waitlist: SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY belum diset");
+    console.error("waitlist: SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY is not set");
     return NextResponse.json(
-      { ok: false, error: "Ada gangguan di server. Coba lagi sebentar lagi." },
+      { ok: false, error: "Something went wrong on our end. Please try again in a moment." },
       { status: 500 }
     );
   }
@@ -49,14 +49,14 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           ok: false,
-          error: "Email ini sudah ada di waitlist — tinggal tunggu undangannya.",
+          error: "This email is already on the waitlist — just wait for your invite.",
         },
         { status: 409 }
       );
     }
     console.error("waitlist insert error:", error);
     return NextResponse.json(
-      { ok: false, error: "Gagal menyimpan email. Coba lagi sebentar lagi." },
+      { ok: false, error: "Couldn't save your email. Please try again in a moment." },
       { status: 500 }
     );
   }

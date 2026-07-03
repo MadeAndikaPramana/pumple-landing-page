@@ -22,21 +22,21 @@ export default function WaitlistCta() {
 
           <Image
             src="/mascot.png"
-            alt="Mascot Pumple, raja katak santai bermahkota"
+            alt="Pumple mascot, a laid-back crowned frog king"
             width={128}
             height={128}
             className="relative mx-auto w-24 animate-float sm:w-28"
           />
 
           <h2 className="relative mt-8 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-            Antriannya jalan.
+            The queue is moving.
             <br />
-            <span className="gradient-text">Kamu ikut nggak?</span>
+            <span className="gradient-text">Are you in?</span>
           </h2>
 
           <p className="relative mx-auto mt-5 max-w-xl text-lg text-pumple-muted">
-            Slot beta terbatas dan dibuka bertahap. Amankan tempatmu sekarang — gratis,
-            cukup satu email.
+            Beta slots are limited and open in waves. Lock in your spot now — free, just
+            one email.
           </p>
 
           <div className="relative mx-auto mt-9 max-w-xl">
@@ -44,7 +44,7 @@ export default function WaitlistCta() {
           </div>
 
           <p className="relative text-sm text-pumple-dim">
-            Email kamu cuma dipakai buat undangan beta. Nggak ada spam.
+            We only use your email for your beta invite. No spam.
           </p>
         </motion.div>
       </section>

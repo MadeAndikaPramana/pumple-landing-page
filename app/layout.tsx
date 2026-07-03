@@ -15,24 +15,25 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pumple — AI Crypto Analyst untuk Trader Indonesia",
+  title: "Pumple — Community Trading Platform for Crypto",
   description:
-    "Tanya apa aja soal pasar crypto, dijawab kayak analis pribadi: Fibonacci, SMC, whale tracking, dan sentimen — dalam satu chat Bahasa Indonesia. Pump Smarter, Not Harder.",
+    "Battle your signals head-to-head, climb the accuracy leaderboard, and prove your calls against the community — with an AI analyst built in for Fibonacci, SMC, whale tracking, and sentiment. Pump Smarter, Not Harder.",
   keywords: [
     "crypto",
+    "trading community",
+    "signal battles",
+    "leaderboard",
     "AI analyst",
     "trading",
-    "Indonesia",
     "Bitcoin",
     "SMC",
-    "Fibonacci",
     "whale tracking",
   ],
   icons: { icon: "/logo.png" },
   openGraph: {
     title: "Pumple — Pump Smarter, Not Harder.",
     description:
-      "AI crypto analyst yang jawab pertanyaan tradingmu 24/7. Gabung waitlist beta.",
+      "The community trading platform where traders battle signals and climb the leaderboard — with AI analysis built in. Join the beta waitlist.",
     type: "website",
   },
 };
@@ -45,7 +46,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="id" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth">
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} bg-pumple-bg font-sans text-pumple-text antialiased`}
       >
@@ -53,7 +54,7 @@ export default function RootLayout({
           href="#konten"
           className="sr-only z-[100] rounded-full bg-pumple-green px-5 py-2.5 font-bold text-pumple-bg focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
         >
-          Langsung ke konten
+          Skip to content
         </a>
         {children}
       </body>

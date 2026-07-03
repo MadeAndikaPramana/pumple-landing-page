@@ -2,23 +2,23 @@
 
 import Image from "next/image";
 import { motion, MotionConfig } from "framer-motion";
-import { Languages, ListChecks, Zap } from "lucide-react";
+import { ListChecks, Swords, Trophy, Zap } from "lucide-react";
 
 const POINTS = [
   {
     icon: Zap,
-    title: "Jawaban dalam hitungan detik, 24/7",
-    desc: "Pasar crypto nggak tidur — analismu juga nggak.",
+    title: "Answers in seconds, 24/7",
+    desc: "Crypto markets never sleep — neither does your analysis.",
   },
   {
-    icon: Languages,
-    title: "Bahasa Indonesia yang natural",
-    desc: "Nggak perlu translate istilah atau baca laporan kaku.",
+    icon: Swords,
+    title: "Share it straight to a battle",
+    desc: "Turn any answer into a signal you can post to a battle or stake on the leaderboard.",
   },
   {
     icon: ListChecks,
-    title: "Setiap sinyal ada alasannya",
-    desc: "Level, struktur, dan data on-chain — bukan cuma “buy sekarang”.",
+    title: "Every call comes with reasoning",
+    desc: "Levels, structure, and on-chain data — not just “buy now”.",
   },
 ];
 
@@ -52,16 +52,17 @@ export default function ChatDemo() {
         <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-2">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-pumple-green">
-              {"// chat analyst"}
+              {"// ai chat"}
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-              Ngobrol santai,
+              Casual questions,
               <br />
-              jawaban level analis.
+              analyst-grade answers.
             </h2>
             <p className="mt-5 max-w-md text-lg leading-relaxed text-pumple-muted">
-              Nggak perlu buka lima tab dan nebak-nebak sinyal Telegram. Tanya langsung,
-              Pumple yang ngerangkum semuanya.
+              No more juggling five tabs and second-guessing Telegram calls. Ask in plain
+              language, Pumple pulls it all together — then post the result as a signal
+              your battles and leaderboard runs are built on.
             </p>
 
             <ul className="mt-9 space-y-6">
@@ -89,7 +90,7 @@ export default function ChatDemo() {
             >
               <motion.div variants={bubble} className="flex justify-end">
                 <p className="max-w-[85%] rounded-2xl rounded-br-md border border-pumple-green/25 bg-pumple-green/10 px-4 py-3 text-sm leading-relaxed">
-                  BTC gimana sekarang? Masih oke buat entry?
+                  How&apos;s BTC looking right now? Still ok for an entry?
                 </p>
               </motion.div>
 
@@ -97,8 +98,8 @@ export default function ChatDemo() {
                 <BotAvatar />
                 <div className="max-w-[85%] space-y-3 rounded-2xl rounded-bl-md border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-relaxed">
                   <p>
-                    Struktur H4 masih bullish. CHoCH valid di 94.6k, dan ada order block
-                    fresh di 95.1k–95.4k yang belum disentuh.
+                    H4 structure is still bullish. CHoCH confirmed at 94.6k, and there&apos;s
+                    a fresh order block at 95.1k–95.4k that hasn&apos;t been tapped yet.
                   </p>
                   <div className="space-y-1.5 rounded-lg bg-black/40 p-3 font-mono text-xs text-pumple-muted">
                     <p className="flex justify-between gap-4">
@@ -114,32 +115,50 @@ export default function ChatDemo() {
                       <span className="text-pumple-green">+$18.2M ▲</span>
                     </p>
                     <p className="flex justify-between gap-4">
-                      <span>SENTIMEN</span>
+                      <span>SENTIMENT</span>
                       <span className="text-pumple-text">72 · Greed</span>
                     </p>
                   </div>
                   <p>
-                    Kalau mau entry, zona 95.1k–95.4k paling masuk akal secara
-                    risk-reward. Mau kupasangin alert?
+                    If you&apos;re entering, the 95.1k–95.4k zone makes the most sense on
+                    risk-reward. Want me to set an alert?
                   </p>
                 </div>
               </motion.div>
 
               <motion.div variants={bubble} className="flex justify-end">
                 <p className="max-w-[85%] rounded-2xl rounded-br-md border border-pumple-green/25 bg-pumple-green/10 px-4 py-3 text-sm leading-relaxed">
-                  Boleh, alert pas harga masuk zona ya.
+                  Sure, alert me when price hits the zone.
                 </p>
               </motion.div>
 
               <motion.div variants={bubble} className="flex gap-3">
                 <BotAvatar />
                 <p className="max-w-[85%] rounded-2xl rounded-bl-md border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-relaxed">
-                  Beres — alert aktif di 95,400. Kukabari begitu harga nyentuh zonanya.
+                  Done — alert set at 95,400. I&apos;ll ping you the moment price taps the
+                  zone.
                 </p>
+              </motion.div>
+
+              <motion.div
+                variants={bubble}
+                className="flex flex-wrap items-center gap-2 border-t border-white/5 pt-4"
+              >
+                <span className="mr-1 font-mono text-[10px] uppercase tracking-widest text-pumple-dim">
+                  Share this call
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-pumple-green/25 bg-pumple-green/10 px-3 py-1 text-xs font-medium text-pumple-green">
+                  <Swords className="h-3.5 w-3.5" aria-hidden="true" />
+                  Post to a battle
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-pumple-muted">
+                  <Trophy className="h-3.5 w-3.5" aria-hidden="true" />
+                  Stake on leaderboard
+                </span>
               </motion.div>
             </motion.div>
             <p className="mt-3 text-center text-xs text-pumple-dim">
-              Preview antarmuka — data ilustrasi.
+              Interface preview — illustrative data.
             </p>
           </div>
         </div>

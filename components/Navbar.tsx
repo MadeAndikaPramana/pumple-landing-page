@@ -5,8 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const LINKS = [
-  { href: "#fitur", label: "Fitur" },
-  { href: "#cara-kerja", label: "Cara Kerja" },
+  { href: "#fitur", label: "Features" },
+  { href: "#cara-kerja", label: "How It Works" },
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -29,13 +29,13 @@ export default function Navbar() {
       }`}
     >
       <nav
-        aria-label="Navigasi utama"
+        aria-label="Main navigation"
         className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6"
       >
         <Link href="/" className="flex items-center gap-2.5">
           <Image
             src="/logo.png"
-            alt="Logo Pumple"
+            alt="Pumple logo"
             width={34}
             height={34}
             className="rounded-lg"
@@ -61,7 +61,7 @@ export default function Navbar() {
           href="#waitlist"
           className="inline-flex min-h-[40px] cursor-pointer items-center rounded-full bg-pumple-green px-5 text-sm font-bold text-pumple-bg transition hover:bg-pumple-lime hover:shadow-glow-sm"
         >
-          Gabung Waitlist
+          Join Waitlist
         </a>
       </nav>
     </header>

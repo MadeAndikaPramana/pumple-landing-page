@@ -6,24 +6,24 @@ import { ChevronDown } from "lucide-react";
 
 const ITEMS = [
   {
-    q: "Apa itu Pumple?",
-    a: "Pumple adalah AI analyst untuk pasar crypto. Kamu bertanya lewat chat — soal struktur harga, level Fibonacci, aktivitas whale, atau sentimen pasar — dan Pumple menjawab dengan analisis yang ada alasannya, dalam Bahasa Indonesia.",
+    q: "What is Pumple?",
+    a: "Pumple is a community trading platform for crypto. Traders battle their signals head-to-head, climb an accuracy leaderboard, and prove their calls against each other — with an AI analyst built in to break down structure, Fibonacci levels, whale activity, and sentiment whenever you want a deeper read.",
   },
   {
-    q: "Kapan aksesnya dibuka?",
-    a: "Beta tertutup dibuka bertahap sepanjang 2026. Undangan dikirim lewat email sesuai urutan waitlist — yang daftar duluan, masuk duluan.",
+    q: "When does access open?",
+    a: "The closed beta opens in waves throughout 2026. Invites go out by email in waitlist order — first in line, first in.",
   },
   {
-    q: "Bayar berapa?",
-    a: "Selama beta: gratis, tanpa kartu kredit. Skema harga publik diumumkan menjelang launch, dan anggota waitlist dapat penawaran paling awal.",
+    q: "How much does it cost?",
+    a: "During beta it's free, no credit card. Public pricing lands closer to launch, and waitlist members get the earliest offer.",
   },
   {
-    q: "Ini financial advice bukan?",
-    a: "Bukan. Pumple adalah alat bantu analisis — dia menyajikan data dan struktur pasar, tapi keputusan (dan risikonya) tetap sepenuhnya di tangan kamu. Trading crypto berisiko tinggi.",
+    q: "Is this financial advice?",
+    a: "No. Pumple is an analysis and competition tool — it surfaces data, market structure, and community calls, but every decision (and its risk) stays entirely with you. Crypto trading is high-risk.",
   },
   {
-    q: "Datanya dari mana?",
-    a: "Harga dan orderflow dari exchange besar seperti Binance dan Bybit, data on-chain untuk pergerakan whale, plus sinyal sosial dari X untuk sentimen.",
+    q: "Where does the data come from?",
+    a: "Prices and orderflow from major exchanges like Binance and Bybit, on-chain data for whale movements, plus social signals from X for sentiment.",
   },
 ];
 
@@ -40,7 +40,7 @@ export default function Faq() {
               {"// faq"}
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-              Masih mikir-mikir?
+              Still on the fence?
             </h2>
           </div>
 
