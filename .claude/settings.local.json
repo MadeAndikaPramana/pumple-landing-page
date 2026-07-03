@@ -11,7 +11,8 @@
       "Bash(npm run *)",
       "Bash(curl -s http://localhost:3031)",
       "Bash(npx playwright *)",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(python3 /Users/andika/.claude/skills/ui-ux-pro-max/scripts/search.py \"fitness gym app waitlist dark neon crypto-style landing\" --design-system -p \"Pumple\")"
     ]
   }
 }
