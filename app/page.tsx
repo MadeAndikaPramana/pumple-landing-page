@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Ticker from "@/components/Ticker";
 import ChatDemo from "@/components/ChatDemo";
+import Community from "@/components/Community";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import Faq from "@/components/Faq";
@@ -16,6 +17,7 @@ export default function Home() {
         <Hero />
         <Ticker />
         <ChatDemo />
+        <Community />
         <Features />
         <HowItWorks />
         <Faq />

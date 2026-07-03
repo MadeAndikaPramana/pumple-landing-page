@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const LINKS = [
+  { href: "#community", label: "Community" },
   { href: "#fitur", label: "Features" },
   { href: "#cara-kerja", label: "How It Works" },
   { href: "#faq", label: "FAQ" },
