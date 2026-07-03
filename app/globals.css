@@ -61,6 +61,7 @@ body {
 
 /* Grid halus di belakang hero, memudar ke bawah */
 .bg-grid-fade {
+  position: relative;
   background-image: linear-gradient(rgba(74, 222, 128, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(74, 222, 128, 0.05) 1px, transparent 1px);
   background-size: 56px 56px;
@@ -68,8 +69,89 @@ body {
   mask-image: radial-gradient(ellipse 100% 80% at 50% 0%, black 30%, transparent 95%);
 }
 
+/* Gelombang pulse yang menyapu grid — imitasi chart yang hidup */
+.bg-grid-fade::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 42%,
+    rgba(74, 222, 128, 0.09) 50%,
+    rgba(163, 230, 53, 0.05) 54%,
+    transparent 62%
+  );
+  background-size: 250% 100%;
+  animation: gridSweep 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Riak pulse yang memancar dari puncak hero */
+.bg-grid-fade::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 120vmax;
+  height: 120vmax;
+  transform: translate(-50%, -50%) scale(0.2);
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 58%, rgba(74, 222, 128, 0.06) 62%, transparent 66%);
+  animation: gridRipple 7s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes gridSweep {
+  0% {
+    background-position: 150% 0;
+  }
+  100% {
+    background-position: -60% 0;
+  }
+}
+
+@keyframes gridRipple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.15);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
 .hero-glow {
   background: radial-gradient(ellipse 70% 55% at 50% -10%, rgba(74, 222, 128, 0.16) 0%, transparent 70%);
+}
+
+/* Sorotan hijau yang mengikuti kursor — senada dengan glow yang ada */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 40;
+  will-change: transform, opacity;
+  transform: translate3d(var(--cursor-x, -1000px), var(--cursor-y, -1000px), 0);
+  background: radial-gradient(
+    circle,
+    rgba(74, 222, 128, 0.1) 0%,
+    rgba(74, 222, 128, 0.045) 32%,
+    transparent 68%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.cursor-glow[data-active="true"] {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
