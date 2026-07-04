@@ -14,18 +14,60 @@ html {
 }
 
 body {
+  /* Warna latar sesungguhnya digambar oleh .scene-backdrop yang crossfade
+     mengikuti scroll; body cukup jadi base gelap di baliknya */
   background-color: var(--bg);
-  /* Wash warna statis di kedalaman scroll yang berbeda — tiap section dapat
-     pencahayaan ambient-nya sendiri, bukan satu hitam datar */
-  background-image:
-    radial-gradient(ellipse 60% 26% at 12% 6%, rgba(74, 222, 128, 0.07), transparent 65%),
-    radial-gradient(ellipse 55% 20% at 90% 24%, rgba(163, 230, 53, 0.05), transparent 65%),
-    radial-gradient(ellipse 65% 24% at 6% 50%, rgba(52, 211, 153, 0.05), transparent 65%),
-    radial-gradient(ellipse 55% 20% at 94% 72%, rgba(74, 222, 128, 0.06), transparent 65%),
-    radial-gradient(ellipse 75% 22% at 50% 100%, rgba(163, 230, 53, 0.05), transparent 70%),
-    linear-gradient(180deg, #0c110d 0%, #0d0d0d 20%, #0c100e 48%, #0d0f0c 76%, #0b0e0c 100%);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Latar per-adegan — lapisan fixed yang opacity-nya dikendalikan
+   ScrollBackdrop per frame, jadi warna berpindah mulus saat scroll */
+.scene-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* Adegan 1 — Hero: hijau fajar, senada glow hero yang sudah ada */
+.scene--hero {
+  opacity: 1;
+  background:
+    radial-gradient(ellipse 60% 45% at 85% 15%, rgba(163, 230, 53, 0.07), transparent 65%),
+    radial-gradient(ellipse 55% 40% at 10% 60%, rgba(74, 222, 128, 0.06), transparent 65%),
+    linear-gradient(180deg, #0c110d 0%, #0d0d0d 100%);
+}
+
+/* Adegan 2 — Demo & Community: teal/cyan, nuansa "AI analyst" */
+.scene--teal {
+  background:
+    radial-gradient(ellipse 65% 50% at 15% 30%, rgba(45, 212, 191, 0.13), transparent 65%),
+    radial-gradient(ellipse 55% 45% at 85% 75%, rgba(34, 211, 238, 0.08), transparent 65%),
+    linear-gradient(180deg, #0a1213 0%, #0b0f10 100%);
+}
+
+/* Adegan 3 — Features & How it works: lime, lebih terang dan energik */
+.scene--lime {
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 25%, rgba(163, 230, 53, 0.12), transparent 65%),
+    radial-gradient(ellipse 55% 45% at 12% 70%, rgba(74, 222, 128, 0.08), transparent 65%),
+    linear-gradient(180deg, #0e110a 0%, #0d0e0b 100%);
+}
+
+/* Adegan 4 — FAQ & Waitlist: emerald malam, glow naik dari bawah */
+.scene--emerald {
+  background:
+    radial-gradient(ellipse 75% 55% at 50% 105%, rgba(52, 211, 153, 0.16), transparent 70%),
+    radial-gradient(ellipse 55% 40% at 10% 15%, rgba(74, 222, 128, 0.06), transparent 65%),
+    linear-gradient(180deg, #0a100e 0%, #081110 100%);
 }
 
 ::selection {
