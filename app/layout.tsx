@@ -51,6 +51,12 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} bg-pumple-bg font-sans text-pumple-text antialiased`}
       >
+        <div className="ambient" aria-hidden="true">
+          <div className="ambient-orb ambient-orb--a" />
+          <div className="ambient-orb ambient-orb--b" />
+          <div className="ambient-orb ambient-orb--c" />
+          <div className="ambient-grain" />
+        </div>
         <a
           href="#konten"
           className="sr-only z-[100] rounded-full bg-pumple-green px-5 py-2.5 font-bold text-pumple-bg focus:not-sr-only focus:fixed focus:left-4 focus:top-4"

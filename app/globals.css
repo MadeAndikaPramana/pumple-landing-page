@@ -15,6 +15,15 @@ html {
 
 body {
   background-color: var(--bg);
+  /* Wash warna statis di kedalaman scroll yang berbeda — tiap section dapat
+     pencahayaan ambient-nya sendiri, bukan satu hitam datar */
+  background-image:
+    radial-gradient(ellipse 60% 26% at 12% 6%, rgba(74, 222, 128, 0.07), transparent 65%),
+    radial-gradient(ellipse 55% 20% at 90% 24%, rgba(163, 230, 53, 0.05), transparent 65%),
+    radial-gradient(ellipse 65% 24% at 6% 50%, rgba(52, 211, 153, 0.05), transparent 65%),
+    radial-gradient(ellipse 55% 20% at 94% 72%, rgba(74, 222, 128, 0.06), transparent 65%),
+    radial-gradient(ellipse 75% 22% at 50% 100%, rgba(163, 230, 53, 0.05), transparent 70%),
+    linear-gradient(180deg, #0c110d 0%, #0d0d0d 20%, #0c100e 48%, #0d0f0c 76%, #0b0e0c 100%);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
@@ -101,6 +110,93 @@ body {
 
 .hero-glow {
   background: radial-gradient(ellipse 70% 55% at 50% -10%, rgba(74, 222, 128, 0.16) 0%, transparent 70%);
+}
+
+/* Lapisan ambient di belakang seluruh konten: orb aurora yang melayang + grain */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.ambient-orb--a {
+  width: 55vmax;
+  height: 55vmax;
+  left: -18vmax;
+  top: -18vmax;
+  background: radial-gradient(
+    circle,
+    rgba(74, 222, 128, 0.1) 0%,
+    rgba(74, 222, 128, 0.04) 40%,
+    transparent 70%
+  );
+  animation: orbDriftA 26s ease-in-out infinite alternate;
+}
+
+.ambient-orb--b {
+  width: 48vmax;
+  height: 48vmax;
+  right: -20vmax;
+  bottom: -16vmax;
+  background: radial-gradient(
+    circle,
+    rgba(163, 230, 53, 0.08) 0%,
+    rgba(163, 230, 53, 0.03) 45%,
+    transparent 70%
+  );
+  animation: orbDriftB 32s ease-in-out infinite alternate;
+}
+
+.ambient-orb--c {
+  width: 34vmax;
+  height: 34vmax;
+  left: 50%;
+  top: 55%;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.06) 0%, transparent 65%);
+  animation: orbDriftC 40s ease-in-out infinite alternate;
+}
+
+@keyframes orbDriftA {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(10vw, 6vh, 0) scale(1.15);
+  }
+}
+
+@keyframes orbDriftB {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  to {
+    transform: translate3d(-8vw, -8vh, 0) scale(0.95);
+  }
+}
+
+@keyframes orbDriftC {
+  from {
+    transform: translate3d(-50%, -50%, 0) scale(0.9);
+  }
+  to {
+    transform: translate3d(calc(-50% + 6vw), calc(-50% - 10vh), 0) scale(1.2);
+  }
+}
+
+/* Grain halus — meredam banding gradien dan memberi tekstur */
+.ambient-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.05;
 }
 
 /* Squash-bob saat si katak menyantap kunang-kunang */
