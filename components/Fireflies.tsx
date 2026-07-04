@@ -71,7 +71,8 @@ export default function Fireflies({
     const fctx = front.getContext("2d");
     if (!bctx || !fctx) return;
 
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Decorative glow renders at CSS resolution (DPR 1) — keeps the canvases
+    // cheap on high-DPI / integrated GPUs, and soft glows don't need retina.
     let W = 0;
     let H = 0;
 
@@ -79,42 +80,69 @@ export default function Fireflies({
       const r = section.getBoundingClientRect();
       W = r.width;
       H = r.height;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
       for (const c of [back, front]) {
-        c.width = Math.round(W * dpr);
-        c.height = Math.round(H * dpr);
+        c.width = Math.round(W);
+        c.height = Math.round(H);
         c.style.width = `${W}px`;
         c.style.height = `${H}px`;
       }
-      bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      measure();
     };
+
+    // Cached geometry in section-local px. These are invariant to scroll, so we
+    // only recompute on resize and while the entry animation settles.
+    let cx = 0;
+    let cy = 0; // headline centre (orbit centre)
+    let mrx = 0;
+    let mry = 0; // frog mouth at rest (lure target)
+    let frogW = 120;
+    const secRect = () => section.getBoundingClientRect();
+    const measure = () => {
+      const s = secRect();
+      const h = h1Ref.current?.getBoundingClientRect();
+      if (h) {
+        cx = h.left - s.left + h.width / 2;
+        cy = h.top - s.top + h.height / 2;
+      } else {
+        cx = W / 2;
+        cy = H * 0.32;
+      }
+      const a = mouthRef.current?.getBoundingClientRect();
+      if (a) {
+        mrx = a.left - s.left + a.width / 2;
+        mry = a.top - s.top + a.height / 2;
+      } else {
+        mrx = W * 0.7;
+        mry = H * 0.5;
+      }
+      const f = frogRef.current?.getBoundingClientRect();
+      if (f) frogW = f.width;
+    };
+
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(section);
+    // Re-measure a few times while the hero's entry animation settles.
+    const settleTimers = [300, 700, 1300].map((ms) => window.setTimeout(measure, ms));
 
-    // Orbit center = headline center; mouth = frog mouth. Both in section-local px.
-    const secRect = () => section.getBoundingClientRect();
-    const center = () => {
-      const s = secRect();
-      const h = h1Ref.current?.getBoundingClientRect();
-      if (!h) return { x: W / 2, y: H * 0.32 };
-      return { x: h.left - s.left + h.width / 2, y: h.top - s.top + h.height / 2 };
+    // Pre-rendered glow sprite (built once) — far cheaper than creating a radial
+    // gradient per particle every frame. The bright core is baked in.
+    const makeGlow = (cr: number, cg: number, cb: number) => {
+      const S = 48;
+      const cv = document.createElement("canvas");
+      cv.width = cv.height = S;
+      const g = cv.getContext("2d")!;
+      const grd = g.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+      grd.addColorStop(0, "rgba(240,255,230,0.95)");
+      grd.addColorStop(0.18, `rgba(${cr},${cg},${cb},0.7)`);
+      grd.addColorStop(0.45, `rgba(${cr},${cg},${cb},0.2)`);
+      grd.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
+      g.fillStyle = grd;
+      g.fillRect(0, 0, S, S);
+      return cv;
     };
-    const mouth = () => {
-      const s = secRect();
-      // Read the live screen position of an invisible anchor placed *inside* the
-      // squashing/stretching bob element, so the tongue base tracks the mouth
-      // through every transform (squash, stretch, rotate, float).
-      const a = mouthRef.current?.getBoundingClientRect();
-      const f = frogRef.current?.getBoundingClientRect();
-      if (!a || !f) return { x: W * 0.7, y: H * 0.5, w: 120 };
-      return {
-        x: a.left - s.left + a.width / 2,
-        y: a.top - s.top + a.height / 2,
-        w: f.width,
-      };
-    };
+    const glowGreen = makeGlow(74, 222, 128);
+    const glowLime = makeGlow(163, 230, 53);
 
     const spawn = (p: Firefly) => {
       p.angle = rand(0, Math.PI * 2);
@@ -127,11 +155,9 @@ export default function Fireflies({
       p.flickSpeed = rand(2, 5);
       p.lime = Math.random() < 0.4;
       p.state = "orbit";
-      // Seed a finite position so the first frame never reads undefined/NaN
-      // before layout has settled.
-      const c = center();
-      p.x = c.x + Math.cos(p.angle) * p.rx;
-      p.y = c.y + Math.sin(p.angle) * p.ry;
+      // Seed a finite position from cached geometry.
+      p.x = cx + Math.cos(p.angle) * p.rx;
+      p.y = cy + Math.sin(p.angle) * p.ry;
     };
 
     const flies: Firefly[] = Array.from({ length: COUNT }, () => {
@@ -145,27 +171,12 @@ export default function Fireflies({
     let nextSnackAt = performance.now() / 1000 + rand(3, 6);
 
     const drawFly = (ctx: CanvasRenderingContext2D, p: Firefly, alpha: number, scale: number) => {
-      const r = p.size * scale;
-      const glow = r * 5;
-      // Guard against a non-finite position/size during layout or resize races —
-      // createRadialGradient throws on NaN/Infinity.
-      if (!Number.isFinite(p.x) || !Number.isFinite(p.y) || !Number.isFinite(glow) || glow <= 0) {
-        return;
-      }
-      const [cr, cg, cb] = p.lime ? [163, 230, 53] : [74, 222, 128];
-      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glow);
-      g.addColorStop(0, `rgba(${cr},${cg},${cb},${0.9 * alpha})`);
-      g.addColorStop(0.4, `rgba(${cr},${cg},${cb},${0.25 * alpha})`);
-      g.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, glow, 0, Math.PI * 2);
-      ctx.fill();
-      // bright core
-      ctx.fillStyle = `rgba(240,255,230,${alpha})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, Math.max(0.6, r * 0.5), 0, Math.PI * 2);
-      ctx.fill();
+      // Guard against a non-finite position during a layout/resize race.
+      if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) return;
+      const glow = p.size * scale * 5; // glow radius
+      ctx.globalAlpha = alpha < 0 ? 0 : alpha > 1 ? 1 : alpha;
+      ctx.drawImage(p.lime ? glowLime : glowGreen, p.x - glow, p.y - glow, glow * 2, glow * 2);
+      ctx.globalAlpha = 1;
     };
 
     let raf = 0;
@@ -176,15 +187,13 @@ export default function Fireflies({
       last = now;
       const t = now / 1000;
 
-      const c = center();
-      const m = mouth();
-      // Lure point sits between mouth and headline so the tongue has visible length.
-      const dx = c.x - m.x;
-      const dy = c.y - m.y;
+      // Cached geometry — no per-frame layout reads.
+      const dx = cx - mrx;
+      const dy = cy - mry;
       const dl = Math.hypot(dx, dy) || 1;
-      const reach = Math.min(m.w * 0.75, 80);
-      const lureX = m.x + (dx / dl) * reach;
-      const lureY = m.y + (dy / dl) * reach;
+      const reach = Math.min(frogW * 0.75, 80);
+      const lureX = mrx + (dx / dl) * reach;
+      const lureY = mry + (dy / dl) * reach;
 
       // Schedule a snack.
       if (!snack && t > nextSnackAt) {
@@ -214,8 +223,8 @@ export default function Fireflies({
         let depth = 0;
         if (p.state === "orbit") {
           p.angle += p.speed * dt;
-          p.x = c.x + Math.cos(p.angle) * p.rx;
-          p.y = c.y + Math.sin(p.angle) * p.ry;
+          p.x = cx + Math.cos(p.angle) * p.rx;
+          p.y = cy + Math.sin(p.angle) * p.ry;
           depth = Math.sin(p.angle + p.depthPhase);
         } else if (p.state === "lure") {
           p.lureT = Math.min(1, p.lureT + dt / LURE_S);
@@ -248,20 +257,25 @@ export default function Fireflies({
         drawFly(depth >= 0 ? fctx : bctx, p, alpha, scale);
       }
 
-      // Tongue (front canvas, normal blending for the pink).
+      // Tongue (front canvas, normal blending for the pink). Only here do we read
+      // the live mouth position, so the base tracks the squash/stretch.
       if (snack && snack.phase !== "lure") {
+        const s = secRect();
+        const a = mouthRef.current?.getBoundingClientRect();
+        const mx = a ? a.left - s.left + a.width / 2 : mrx;
+        const my = a ? a.top - s.top + a.height / 2 : mry;
         snack.t += dt / (snack.phase === "out" ? OUT_S : IN_S);
         const prog = Math.min(1, snack.t);
         const e = easeOut(prog);
         const k = snack.phase === "out" ? e : 1 - e;
-        const tipX = m.x + (snack.cx - m.x) * k;
-        const tipY = m.y + (snack.cy - m.y) * k;
+        const tipX = mx + (snack.cx - mx) * k;
+        const tipY = my + (snack.cy - my) * k;
         fctx.globalCompositeOperation = "source-over";
         fctx.lineCap = "round";
         fctx.strokeStyle = "rgba(251,113,133,0.95)";
         fctx.lineWidth = 5;
         fctx.beginPath();
-        fctx.moveTo(m.x, m.y);
+        fctx.moveTo(mx, my);
         fctx.lineTo(tipX, tipY);
         fctx.stroke();
         fctx.fillStyle = "rgba(251,113,133,0.95)";
@@ -293,14 +307,33 @@ export default function Fireflies({
 
       bctx.globalCompositeOperation = "source-over";
       fctx.globalCompositeOperation = "source-over";
-      raf = requestAnimationFrame(frame);
+      raf = visible ? requestAnimationFrame(frame) : 0;
     };
+
+    // Only run the loop while the hero is on screen — no cost once scrolled past.
+    let visible = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible && !raf) {
+          last = performance.now();
+          raf = requestAnimationFrame(frame);
+        } else if (!visible) {
+          bctx.clearRect(0, 0, W, H);
+          fctx.clearRect(0, 0, W, H);
+        }
+      },
+      { threshold: 0 },
+    );
+    io.observe(section);
 
     raf = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      io.disconnect();
+      settleTimers.forEach(clearTimeout);
     };
   }, [sectionRef, backRef, frontRef, h1Ref, frogRef, frogBobRef, mouthRef, onChomp]);
 

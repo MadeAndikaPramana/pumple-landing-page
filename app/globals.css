@@ -69,58 +69,33 @@ body {
   mask-image: radial-gradient(ellipse 100% 80% at 50% 0%, black 30%, transparent 95%);
 }
 
-/* Gelombang pulse yang menyapu grid — imitasi chart yang hidup */
+/* Gelombang pulse yang menyapu grid — imitasi chart yang hidup.
+   Pakai transform (GPU-composited) supaya murah, bukan background-position. */
 .bg-grid-fade::after {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 55%;
   background: linear-gradient(
     100deg,
-    transparent 42%,
-    rgba(74, 222, 128, 0.09) 50%,
-    rgba(163, 230, 53, 0.05) 54%,
-    transparent 62%
+    transparent,
+    rgba(74, 222, 128, 0.09) 45%,
+    rgba(163, 230, 53, 0.05) 55%,
+    transparent
   );
-  background-size: 250% 100%;
   animation: gridSweep 8s ease-in-out infinite;
-  pointer-events: none;
-}
-
-/* Riak pulse yang memancar dari puncak hero */
-.bg-grid-fade::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: 120vmax;
-  height: 120vmax;
-  transform: translate(-50%, -50%) scale(0.2);
-  border-radius: 50%;
-  background: radial-gradient(circle, transparent 58%, rgba(74, 222, 128, 0.06) 62%, transparent 66%);
-  animation: gridRipple 7s ease-out infinite;
+  will-change: transform;
   pointer-events: none;
 }
 
 @keyframes gridSweep {
   0% {
-    background-position: 150% 0;
+    transform: translateX(-100%);
   }
   100% {
-    background-position: -60% 0;
-  }
-}
-
-@keyframes gridRipple {
-  0% {
-    transform: translate(-50%, -50%) scale(0.15);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0;
+    transform: translateX(320%);
   }
 }
 
