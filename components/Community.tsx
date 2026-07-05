@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, MotionConfig } from "framer-motion";
-import { Crown, Flame, Swords, Trophy } from "lucide-react";
+import { ChevronDown, Clock, Crown, Flame, Shield, Swords, Trophy } from "lucide-react";
 
 const STATS = [
   { value: "12,480", label: "Traders in the arena" },
@@ -10,11 +11,23 @@ const STATS = [
 ];
 
 const BATTLE = {
-  pair: "BTC/USDT",
-  timeframe: "H4",
-  left: { handle: "@satoshimaxi", tier: "Whale", call: "LONG", entry: "95,180", pnl: "+4.2%", pnlValue: 4.2, up: true, votes: 312 },
-  right: { handle: "@rektradar", tier: "Shark", call: "SHORT", entry: "95,400", pnl: "-1.8%", pnlValue: -1.8, up: false, votes: 128 },
+  asset: "BTC/USDT", // could also be "Multi-asset"
+  mode: "Classic 1v1", // or "Mock 1v1"
+  mark: "96,420", // live mark price of the asset (shared by both sides)
+  endsInSeconds: 222,
+  left: { handle: "@satoshimaxi", tier: "Whale", tribe: "Smart Money", call: "LONG", entry: "95,180", sl: "93,000", tp: "99,500", pnl: "+4.2%", up: true, votes: 312 },
+  right: { handle: "@rektradar", tier: "Shark", tribe: "Degen Legion", call: "SHORT", entry: "95,400", sl: "97,600", tp: "92,000", pnl: "-1.8%", up: false, votes: 128 },
 };
+
+// Trade activity since the battle opened (mm:ss elapsed). `active` marks moves
+// that still reflect the live position — superseded/closed ones show a grey dot.
+const TRADE_LOG = [
+  { time: "00:14", who: "@satoshimaxi", action: "Opened LONG", detail: "SL/TP 94,800 / —", price: "95,180", up: true, active: false },
+  { time: "01:52", who: "@rektradar", action: "Opened SHORT", detail: "SL/TP 97,600 / 92,000", price: "95,400", up: false, active: false },
+  { time: "04:31", who: "@satoshimaxi", action: "Added to position", detail: "avg 95,300", price: "95,640", up: true, active: false },
+  { time: "06:10", who: "@rektradar", action: "Raised stop-loss", detail: "97,600 → 96,900", price: "", up: false, active: true },
+  { time: "08:47", who: "@satoshimaxi", action: "Partial take-profit", detail: "closed 30%", price: "96,900", up: true, active: true },
+];
 
 const LEADERS = [
   { rank: 1, handle: "@satoshimaxi", tier: "Whale", acc: "78%", streak: 9 },
@@ -30,6 +43,15 @@ const TIER_CLASS: Record<string, string> = {
   Dolphin: "bg-white/10 text-pumple-text",
   Fish: "bg-white/[0.06] text-pumple-muted",
   Shrimp: "bg-white/[0.06] text-pumple-dim",
+};
+
+// Each tribe gets its own faction accent so it reads as an allegiance.
+const TRIBE_CLASS: Record<string, string> = {
+  "Smart Money": "bg-sky-400/12 text-sky-300 ring-sky-400/25",
+  "Degen Legion": "bg-amber-400/12 text-amber-300 ring-amber-400/25",
+  "Fib Order": "bg-violet-400/12 text-violet-300 ring-violet-400/25",
+  "Whale Pod": "bg-teal-400/12 text-teal-300 ring-teal-400/25",
+  "Diamond Circle": "bg-cyan-400/12 text-cyan-300 ring-cyan-400/25",
 };
 
 const container = {
@@ -63,13 +85,54 @@ function TierPill({ tier }: { tier: string }) {
   );
 }
 
+function TribePill({ tribe }: { tribe: string }) {
+  const cls = TRIBE_CLASS[tribe] ?? "bg-white/[0.06] text-pumple-muted ring-white/10";
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ring-1 ${cls}`}
+    >
+      <Shield className="h-2.5 w-2.5" aria-hidden="true" />
+      {tribe}
+    </span>
+  );
+}
+
+function ModePill({ mode }: { mode: string }) {
+  const isMock = /mock/i.test(mode);
+  return (
+    <span
+      className={`rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+        isMock ? "bg-amber-400/15 text-amber-300" : "bg-pumple-green/15 text-pumple-green"
+      }`}
+    >
+      {mode}
+    </span>
+  );
+}
+
+function Countdown({ seconds }: { seconds: number }) {
+  const [left, setLeft] = useState(seconds);
+  useEffect(() => {
+    const id = setInterval(() => setLeft((s) => (s <= 0 ? 0 : s - 1)), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const mm = String(Math.floor(left / 60)).padStart(2, "0");
+  const ss = String(left % 60).padStart(2, "0");
+  return (
+    <span
+      className="inline-flex items-center gap-1 font-mono text-xs text-pumple-muted"
+      aria-label={`Ends in ${mm}:${ss}`}
+    >
+      <Clock className="h-3 w-3" aria-hidden="true" />
+      {mm}:{ss}
+    </span>
+  );
+}
+
 export default function Community() {
   const totalVotes = BATTLE.left.votes + BATTLE.right.votes;
   const leftPct = Math.round((BATTLE.left.votes / totalVotes) * 100);
-
-  // Live PnL share — each trader's slice of the combined PnL magnitude.
-  const totalPnl = Math.abs(BATTLE.left.pnlValue) + Math.abs(BATTLE.right.pnlValue);
-  const leftPnlShare = Math.round((Math.abs(BATTLE.left.pnlValue) / totalPnl) * 100);
+  const [showLog, setShowLog] = useState(false);
 
   const traders = [BATTLE.left, BATTLE.right] as const;
 
@@ -114,7 +177,7 @@ export default function Community() {
               variants={item}
               className="glass overflow-hidden rounded-2xl shadow-glow-sm"
             >
-              <div className="flex items-center justify-between border-b border-white/5 px-5 py-3.5">
+              <div className="flex items-center justify-between gap-3 border-b border-white/5 px-5 py-3.5">
                 <span className="inline-flex items-center gap-2">
                   <span className="relative flex h-2 w-2" aria-hidden="true">
                     <span className="absolute inline-flex h-full w-full animate-pulse-dot rounded-full bg-pumple-red" />
@@ -122,9 +185,14 @@ export default function Community() {
                   <span className="font-mono text-xs font-bold uppercase tracking-widest text-pumple-red">
                     Live battle
                   </span>
+                  <span className="text-pumple-dim" aria-hidden="true">
+                    ·
+                  </span>
+                  <Countdown seconds={BATTLE.endsInSeconds} />
                 </span>
-                <span className="font-mono text-xs text-pumple-muted">
-                  {BATTLE.pair} · {BATTLE.timeframe}
+                <span className="inline-flex items-center gap-2">
+                  <span className="font-mono text-xs text-pumple-muted">{BATTLE.asset}</span>
+                  <ModePill mode={BATTLE.mode} />
                 </span>
               </div>
 
@@ -147,7 +215,10 @@ export default function Community() {
                         <p className="truncate text-sm font-semibold text-pumple-text">
                           {t.handle}
                         </p>
-                        <TierPill tier={t.tier} />
+                        <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                          <TierPill tier={t.tier} />
+                          <TribePill tribe={t.tribe} />
+                        </div>
                       </div>
                     </div>
 
@@ -162,9 +233,20 @@ export default function Community() {
                     </span>
 
                     <div className="space-y-1 font-mono text-xs">
+                      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+                        <span className="text-pumple-dim">
+                          ENTRY <span className="text-pumple-muted">{t.entry}</span>
+                        </span>
+                        <span className="text-pumple-dim">
+                          SL/TP{" "}
+                          <span className="text-pumple-muted">
+                            {t.sl} / {t.tp}
+                          </span>
+                        </span>
+                      </div>
                       <p className="flex justify-between gap-3">
-                        <span className="text-pumple-dim">ENTRY</span>
-                        <span className="text-pumple-muted">{t.entry}</span>
+                        <span className="text-pumple-dim">MARK</span>
+                        <span className="text-pumple-text">{BATTLE.mark}</span>
                       </p>
                       <p className="flex justify-between gap-3">
                         <span className="text-pumple-dim">PNL</span>
@@ -177,23 +259,50 @@ export default function Community() {
                 ))}
               </div>
 
-              <div className="border-t border-white/5 px-5 py-4">
-                {/* Live PnL share */}
-                <div className="flex items-center justify-between font-mono text-xs">
-                  <span className="font-semibold text-pumple-green">{BATTLE.left.pnl}</span>
-                  <span className="text-[10px] uppercase tracking-wider text-pumple-dim">
-                    Live PnL share
+              {/* Trade log since the battle opened (collapsible) */}
+              <div className="border-t border-white/5">
+                <button
+                  type="button"
+                  onClick={() => setShowLog((v) => !v)}
+                  aria-expanded={showLog}
+                  className="flex w-full items-center justify-between px-5 py-3 text-xs text-pumple-muted transition-colors hover:text-pumple-text"
+                >
+                  <span className="font-medium">
+                    Trade log · {TRADE_LOG.length} moves since open
                   </span>
-                  <span className="font-semibold text-pumple-red">{BATTLE.right.pnl}</span>
-                </div>
-                <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-pumple-red/40">
-                  <div
-                    className="h-full rounded-l-full bg-pumple-green"
-                    style={{ width: `${leftPnlShare}%` }}
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${showLog ? "rotate-180" : ""}`}
                     aria-hidden="true"
                   />
-                </div>
+                </button>
+                {showLog && (
+                  <ul className="border-t border-white/5 px-5 py-2">
+                    {TRADE_LOG.map((ev) => (
+                      <li key={ev.time} className="flex items-start gap-3 py-1.5 text-xs">
+                        <span className="w-10 shrink-0 font-mono text-pumple-dim">{ev.time}</span>
+                        <span
+                          className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${
+                            !ev.active ? "bg-pumple-dim/70" : ev.up ? "bg-pumple-green" : "bg-pumple-red"
+                          }`}
+                          aria-hidden="true"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <span className={ev.active ? "text-pumple-text" : "text-pumple-muted"}>
+                            {ev.who}
+                          </span>{" "}
+                          <span className="text-pumple-muted">{ev.action}</span>
+                          {ev.detail && <span className="text-pumple-dim"> · {ev.detail}</span>}
+                        </div>
+                        {ev.price && (
+                          <span className="shrink-0 font-mono text-pumple-muted">{ev.price}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
+              <div className="border-t border-white/5 px-5 py-4">
                 {/* Community backing */}
                 <div className="mt-4 flex items-center justify-between text-xs">
                   <span className="font-medium text-pumple-green">
