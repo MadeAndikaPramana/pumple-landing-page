@@ -307,25 +307,37 @@ export default function Fireflies({
 
       bctx.globalCompositeOperation = "source-over";
       fctx.globalCompositeOperation = "source-over";
-      raf = visible ? requestAnimationFrame(frame) : 0;
+      raf = running() ? requestAnimationFrame(frame) : 0;
     };
 
-    // Only run the loop while the hero is on screen — no cost once scrolled past.
-    let visible = true;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        visible = entry.isIntersecting;
-        if (visible && !raf) {
+    // Run only while the hero is on screen AND the tab is visible & focused —
+    // no cost once scrolled past or when the window is in the background.
+    let onScreen = true;
+    const running = () => onScreen && !document.hidden && document.hasFocus();
+    const sync = () => {
+      if (running()) {
+        if (!raf) {
           last = performance.now();
           raf = requestAnimationFrame(frame);
-        } else if (!visible) {
-          bctx.clearRect(0, 0, W, H);
-          fctx.clearRect(0, 0, W, H);
         }
+      } else if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+        bctx.clearRect(0, 0, W, H);
+        fctx.clearRect(0, 0, W, H);
+      }
+    };
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        sync();
       },
       { threshold: 0 },
     );
     io.observe(section);
+    document.addEventListener("visibilitychange", sync);
+    window.addEventListener("blur", sync);
+    window.addEventListener("focus", sync);
 
     raf = requestAnimationFrame(frame);
 
@@ -333,6 +345,9 @@ export default function Fireflies({
       cancelAnimationFrame(raf);
       ro.disconnect();
       io.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+      window.removeEventListener("blur", sync);
+      window.removeEventListener("focus", sync);
       settleTimers.forEach(clearTimeout);
     };
   }, [sectionRef, backRef, frontRef, h1Ref, frogRef, frogBobRef, mouthRef, onChomp]);
