@@ -12,8 +12,8 @@ const STATS = [
 const BATTLE = {
   pair: "BTC/USDT",
   timeframe: "H4",
-  left: { handle: "@satoshimaxi", tier: "Whale", call: "LONG", entry: "95,180", pnl: "+4.2%", up: true, votes: 312 },
-  right: { handle: "@rektradar", tier: "Shark", call: "SHORT", entry: "95,400", pnl: "-1.8%", up: false, votes: 128 },
+  left: { handle: "@satoshimaxi", tier: "Whale", call: "LONG", entry: "95,180", pnl: "+4.2%", pnlValue: 4.2, up: true, votes: 312 },
+  right: { handle: "@rektradar", tier: "Shark", call: "SHORT", entry: "95,400", pnl: "-1.8%", pnlValue: -1.8, up: false, votes: 128 },
 };
 
 const LEADERS = [
@@ -66,6 +66,10 @@ function TierPill({ tier }: { tier: string }) {
 export default function Community() {
   const totalVotes = BATTLE.left.votes + BATTLE.right.votes;
   const leftPct = Math.round((BATTLE.left.votes / totalVotes) * 100);
+
+  // Live PnL share — each trader's slice of the combined PnL magnitude.
+  const totalPnl = Math.abs(BATTLE.left.pnlValue) + Math.abs(BATTLE.right.pnlValue);
+  const leftPnlShare = Math.round((Math.abs(BATTLE.left.pnlValue) / totalPnl) * 100);
 
   const traders = [BATTLE.left, BATTLE.right] as const;
 
@@ -174,7 +178,24 @@ export default function Community() {
               </div>
 
               <div className="border-t border-white/5 px-5 py-4">
-                <div className="flex items-center justify-between text-xs">
+                {/* Live PnL share */}
+                <div className="flex items-center justify-between font-mono text-xs">
+                  <span className="font-semibold text-pumple-green">{BATTLE.left.pnl}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-pumple-dim">
+                    Live PnL share
+                  </span>
+                  <span className="font-semibold text-pumple-red">{BATTLE.right.pnl}</span>
+                </div>
+                <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-pumple-red/40">
+                  <div
+                    className="h-full rounded-l-full bg-pumple-green"
+                    style={{ width: `${leftPnlShare}%` }}
+                    aria-hidden="true"
+                  />
+                </div>
+
+                {/* Community backing */}
+                <div className="mt-4 flex items-center justify-between text-xs">
                   <span className="font-medium text-pumple-green">
                     {BATTLE.left.votes} backing
                   </span>
