@@ -199,6 +199,13 @@ body {
   opacity: 0.05;
 }
 
+/* Pause the always-running background animations when the tab is hidden or the
+   window is unfocused (toggled by <FxPause>) — saves GPU while idle. */
+.fx-paused .ambient-orb,
+.fx-paused .bg-grid-fade::after {
+  animation-play-state: paused;
+}
+
 /* Squash-bob saat si katak menyantap kunang-kunang */
 .frog-snack {
   animation: frogSnack 420ms ease;
